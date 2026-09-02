@@ -1,0 +1,63 @@
+{
+  "name": "surface-tension",
+  "version": "0.1.0",
+  "description": "UI components whose shapes merge, neck and separate like a liquid \u2014 one SVG filter under ordinary DOM. No WebGL, no canvas, no dependencies.",
+  "keywords": [
+    "react",
+    "ui",
+    "components",
+    "svg-filter",
+    "liquid",
+    "morph",
+    "metaball",
+    "animation",
+    "spring",
+    "design-system"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./tokens.css": "./dist/tokens.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "npm run build:lib && npm run build:types && npm run build:site",
+    "build:lib": "esbuild src/index.ts --bundle --format=esm --outfile=dist/index.js --external:react --external:react-dom --target=es2019 && esbuild src/index.ts --bundle --format=cjs --outfile=dist/index.cjs --external:react --external:react-dom --target=es2019 && node scripts/extract-tokens.mjs",
+    "build:types": "tsc -p tsconfig.build.json",
+    "build:site": "node scripts/build-site.mjs",
+    "dev": "node scripts/build-site.mjs --watch",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "node scripts/contrast-audit.mjs",
+    "prepublishOnly": "npm run typecheck && npm run build:lib && npm run build:types"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "esbuild": "^0.28.0",
+    "playwright": "^1.49.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
