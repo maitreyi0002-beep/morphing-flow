@@ -328,6 +328,42 @@ body {
   letter-spacing: -0.02em;
 }
 .closing p { margin: 0; font-size: 18px; line-height: 1.66; color: var(--ink-2); }
+.closing p + p { margin-top: 20px; }
+
+/* Sits between the masthead and the layout grid — the page's second act,
+   not a footnote on the first one. */
+.skill-callout { padding: 44px 0 52px; max-width: 46rem; border-bottom: 1px solid var(--ink); }
+.skill-callout h2 {
+  margin: 0 0 14px;
+  font-family: var(--serif);
+  font-size: clamp(28px, 3.4vw, 38px);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+}
+.skill-callout p { margin: 0; font-size: 18px; line-height: 1.6; color: var(--ink-2); max-width: 36rem; }
+.skill-callout p + p { margin-top: 20px; }
+.skill-callout a { color: var(--ink-2); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.skill-callout a:hover { color: var(--ink); }
+
+.install {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 24px 0;
+  padding: 16px 20px;
+  background: var(--field);
+  border-top: 1px solid var(--rule-soft);
+  border-bottom: 1px solid var(--rule-soft);
+}
+.install code {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 14px;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
 
 /* ---------- aside ---------- */
 
@@ -352,6 +388,7 @@ body {
   transition: color 0.3s var(--ease);
 }
 .index a:hover { color: var(--ink-2); }
+.index-extra { margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--rule-soft); }
 /* Where you are, marked by weight and ink rather than a highlight block. */
 .index a[data-active='true'] { color: var(--ink); }
 .index a[data-active='true'] span { color: var(--ink-2); }
@@ -613,6 +650,7 @@ input[type='range']:focus-visible { outline: 1px solid var(--ink); outline-offse
   .index .aside-label { display: none; }
   .index ol { flex-direction: row; flex-wrap: wrap; gap: 2px 22px; }
   .index a { padding: 2px 0; }
+  .index-extra { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
 
   .controls {
     order: 1;

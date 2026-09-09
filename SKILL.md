@@ -187,12 +187,17 @@ needs, both of which the first draft got wrong:
 **Squash and trailing mass** (segmented control, moving indicator). Stretch
 along the direction of travel and thin across it, roughly conserving area,
 driven by live velocity so a longer jump deforms more. Add a droplet trailing on
-the opposite side, capped at the budget.
+the opposite side, capped at the budget. Default the corner radius to half the
+shape's height rather than a full capsule, so every indicator in the family
+converges on one lozenge.
 
 **Asymmetric edges** (tab underline). Put the leading and trailing edge on
 different springs — leading stiffer — so the shape elongates in flight and
 contracts on arrival. Flip which is which based on travel direction, derived
-from the index change, never from live positions (that is a feedback loop).
+from the index change, never from live positions (that is a feedback loop). A
+thin bar has almost no blur budget of its own (constraint 2); ride a small
+bead inside it on a lazier spring to carry the liquid read the bar itself
+can't afford.
 
 ## Procedure
 

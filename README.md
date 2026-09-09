@@ -20,6 +20,20 @@ import 'surface-tension/tokens.css';
 
 ---
 
+## Use it as a skill
+
+The filter maths, the six constraints, and the per-component specs are also
+packaged as an agent skill, so a coding agent can build these components
+without this README open. Install it, or hand the agent the file directly.
+
+```bash
+npx skills add maitreyi0002-beep/morphing-flow
+```
+
+[SKILL.md](https://raw.githubusercontent.com/maitreyi0002-beep/morphing-flow/main/SKILL.md)
+
+---
+
 ## How it works
 
 Two layers, driven from one array of shapes.

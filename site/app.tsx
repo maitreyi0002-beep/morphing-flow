@@ -40,7 +40,7 @@ const SPECIMENS: Specimen[] = [
     principle: 'Velocity-driven separation',
     lede: 'An icon that unfurls into a field, with liquid pulled forward off the leading edge.',
     act: 'Click the magnifier to expand, then again to collapse.',
-    note: 'A bar that only grows is a bar that only grows. The liquid read comes from a droplet running ahead of the moving edge in proportion to its speed, reabsorbed as the spring settles. Its lead is capped at the clean-fusion gap rather than the outer bridge limit — past that the neck thins to a hair and you are looking at a second bubble sitting beside a bar. It appears only while expanding: liquid pulled forward reads as surface tension, liquid left behind a shrinking shape reads as debris. The width is clamped at the collapsed size, because a spring undershoot there drops the icon out of its own container.',
+    note: 'A bar that only grows is just a bar that grows. A droplet leads the edge, capped at the clean-fusion gap, and only shows up while expanding — trailing liquid just reads as debris.',
     base: { blur: 8, contrast: 18, threshold: 0.4167 },
     natural: 256,
     render: (liquid) => <TensionSearch liquid={liquid} />,
@@ -51,7 +51,7 @@ const SPECIMENS: Specimen[] = [
     principle: 'One mass, two motions',
     lede: 'A single panel extruding from its trigger, with a second liquid travelling inside it.',
     act: 'Open the menu, then move between rows to travel the highlight.',
-    note: 'A menu is one surface. Giving each option its own blob demonstrates necking beautifully and makes a bad menu — the spacing becomes whatever the springs happen to be doing, and one option always ends up dangling off the trigger. So the liquid here is one panel on an even row pitch, with hairline separators drawn on the content layer, since a 1px shape inside the filter is erased outright. The liquid earns its keep in a second, independent place: the hover highlight, on its own filter group, stretching along its travel and trailing a droplet as it moves between rows.',
+    note: 'A menu is one surface, not six little blobs. This panel holds an even row pitch; the liquid’s real work happens in the hover highlight instead, trailing a droplet as it travels between rows.',
     base: { blur: 6, contrast: 18, threshold: 0.4167 },
     natural: 208,
     render: (liquid) => <TensionDropdown liquid={liquid} />,
@@ -62,7 +62,7 @@ const SPECIMENS: Specimen[] = [
     principle: 'Corner timeline',
     lede: 'A panel that extrudes from its header as one body, its corners relaxing from pill to card.',
     act: 'Toggle it, and watch the corners relax as it opens.',
-    note: 'Header and panel overlap rather than sitting apart, so they are one mass at every frame. Two things this needs that are easy to miss. Corners must move: hold both shapes at pill radius through the merge and you get two stacked lozenges with a pinch between them, which reads as a rendering artefact rather than a card opening. And content must not outlive its container — fading body copy linearly with panel height leaves it legible at a third open, so on the way down the words visibly spill past the liquid edge. The reveal is gated to the last 40% of travel.',
+    note: 'Header and panel overlap, so they’re one mass at every frame. Corners relax from pill to card through the merge, and content only fades in over the last stretch of travel — never past its own edge.',
     base: { blur: 7, contrast: 18, threshold: 0.4167 },
     natural: 256,
     render: (liquid) => <TensionAccordion liquid={liquid} />,
@@ -73,7 +73,7 @@ const SPECIMENS: Specimen[] = [
     principle: 'Thin shapes need low blur',
     lede: 'An underline that stretches between tabs, with a bead trailing inside it.',
     act: 'Jump two tabs at once — the longer travel stretches further.',
-    note: 'This is the constraint that breaks most first attempts. Blur spreads a thin shape’s alpha until its own peak drops below the threshold and it vanishes completely — a 6px underline at the kit default of blur 6 does not look subtle, it disappears. Push the blur control up and watch it dissolve. A low blur buys a small bridge budget, so the liquid has to come from shapes that nearly touch: hence the bead, riding inside the bar on a lazier spring. The bar itself stretches because its leading and trailing edges are on different springs, and which is which flips with direction.',
+    note: 'The constraint that breaks most first attempts: blur thins a shape’s alpha until it vanishes, so a 6px underline caps blur at 3. A bead riding inside the bar carries the liquid read the bar itself can’t afford.',
     base: { blur: 3, contrast: 26, threshold: 0.4167 },
     natural: 252,
     render: (liquid) => <TensionTabs liquid={liquid} />,
@@ -84,7 +84,7 @@ const SPECIMENS: Specimen[] = [
     principle: 'Squash and trailing mass',
     lede: 'A pill that deforms with its own velocity and leaves a droplet behind.',
     act: 'Skip a segment to see the squash exaggerate.',
-    note: 'The pill stretches along its direction of travel and thins across it, roughly conserving area — the oldest trick in animation, driven here by live spring velocity so a two-segment jump deforms more than a one-segment jump. Behind it a droplet lags on a much softer spring and is reabsorbed on arrival, capped inside the clean-fusion gap so it always stays connected. The corner is a real radius rather than a full capsule: default every indicator to half its height and the whole family converges on one lozenge.',
+    note: 'The pill stretches and thins with its own velocity, roughly conserving area — the oldest trick in animation. Its corner defaults to half its height, so every indicator in the family converges on one lozenge.',
     base: { blur: 6, contrast: 18, threshold: 0.4167 },
     natural: 240,
     render: (liquid) => <TensionSegmented liquid={liquid} />,
@@ -95,12 +95,16 @@ const SPECIMENS: Specimen[] = [
     principle: 'Anchored merge',
     lede: 'Selected neighbours fuse into one mass — and only the chip you touched moves.',
     act: 'Select a chip beside another selected one to fuse them.',
-    note: 'The one component here where the liquid is not decoration. A run of adjacent selected chips closes its gaps and fuses, so the silhouette tells you what is grouped before you read a single label. Positions are anchored: every chip holds a fixed slot and moves only when it is fused to its left-hand neighbour, accumulating along a run and resetting when the run breaks. Recomputing the row from its gaps is the obvious implementation and the wrong one — it shifts every chip to the right of the change, and four things moving to express one change reads as a jolt.',
+    note: 'The one component here where the liquid isn’t decoration — fused neighbours show you what’s grouped before you read a label. Positions stay anchored, so selecting one chip moves exactly one chip.',
     base: { blur: 5, contrast: 18, threshold: 0.4167 },
     natural: 468,
     render: (liquid) => <TensionChips liquid={liquid} />,
   },
 ];
+
+const SKILL_INSTALL_COMMAND = 'npx skills add maitreyi0002-beep/morphing-flow';
+const SKILL_RAW_URL =
+  'https://raw.githubusercontent.com/maitreyi0002-beep/morphing-flow/main/SKILL.md';
 
 /* ============================================================
    Controls
@@ -177,7 +181,7 @@ function App() {
   const [c, setC] = useState<Controls>(DEFAULTS);
   const [theme, setTheme] = useState<Theme>('system');
   const [ground, setGround] = useState<Ground>('paper');
-  const activeId = useActiveChapter(SPECIMENS.map((s) => s.id));
+  const activeId = useActiveChapter(['skill', ...SPECIMENS.map((s) => s.id)]);
 
   useEffect(() => {
     const el = document.documentElement;
@@ -222,10 +226,44 @@ function App() {
             </p>
           </header>
 
+          <section className="skill-callout" id="skill">
+            <h2>Use it as a skill</h2>
+            <p>
+              Everything here — the filter maths, the four guardrails, every
+              component spec, the mistakes that produced each rule — is also
+              packaged as an agent skill. Install it and your coding agent can
+              build these components itself, no page required.
+            </p>
+            <div className="install">
+              <code>{SKILL_INSTALL_COMMAND}</code>
+              <CopyButton
+                text={SKILL_INSTALL_COMMAND}
+                label={{
+                  idle: 'Copy install command',
+                  done: 'Command copied',
+                  failed: 'Copy blocked — select manually',
+                }}
+              />
+            </div>
+            <p>
+              Works with Claude Code, Cursor, Copilot and most other agents.
+              Anything else, just hand it the file — it’s one markdown
+              document.{' '}
+              <a href={SKILL_RAW_URL} target="_blank" rel="noopener noreferrer">
+                Read SKILL.md
+              </a>
+            </p>
+          </section>
+
           <div className="layout">
             <nav className="index" aria-label="Contents">
               <p className="aside-label">Contents</p>
               <ol>
+                <li className="index-extra">
+                  <a href="#skill" data-active={activeId === 'skill'}>
+                    Use it as a skill
+                  </a>
+                </li>
                 {SPECIMENS.map((s, i) => (
                   <li key={s.id}>
                     <a href={`#${s.id}`} data-active={s.id === activeId}>
@@ -246,11 +284,9 @@ function App() {
                 <h2>On the merge meaning something</h2>
                 <p>
                   Merging that encodes state — grouped, selected, connected, in
-                  progress — earns its place. Merging that only looks wet does
-                  not. Of the six above, the chips are the one where the
-                  silhouette carries information you would otherwise have to
-                  read. That is the test worth applying before any of this
-                  reaches a real product.
+                  progress — earns its place; merging that just looks wet
+                  doesn’t. Of the six above, only the chips’ silhouette carries
+                  information you’d otherwise read elsewhere.
                 </p>
               </section>
             </main>
@@ -374,22 +410,26 @@ function Chapter({
 }
 
 /**
- * Copies a complete, self-contained build prompt for this component — carrying
- * the current slider values, so a tuned page hands over its tuning.
+ * Copies text to the clipboard, falling back to a selectable textarea where
+ * clipboard access is refused (some embedded contexts).
  */
-function CopyPrompt({ spec, params }: { spec: Specimen; params: TensionParams }) {
+function CopyButton({
+  text,
+  label,
+}: {
+  text: string | (() => string);
+  label: { idle: string; done: string; failed: string };
+}) {
   const [state, setState] = useState<'idle' | 'done' | 'failed'>('idle');
 
   const copy = async () => {
-    const text = buildPrompt(spec.name, spec.principle, params, SPECS[spec.id]);
+    const value = typeof text === 'function' ? text() : text;
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(value);
       setState('done');
     } catch {
-      // Clipboard access is refused in some embedded contexts. Fall back to a
-      // selectable textarea rather than failing silently.
       const ta = document.createElement('textarea');
-      ta.value = text;
+      ta.value = value;
       ta.style.cssText = 'position:fixed;top:-9999px';
       document.body.appendChild(ta);
       ta.select();
@@ -402,12 +442,25 @@ function CopyPrompt({ spec, params }: { spec: Specimen; params: TensionParams })
 
   return (
     <button type="button" className="copy" onClick={copy} data-state={state}>
-      {state === 'done'
-        ? 'Prompt copied'
-        : state === 'failed'
-          ? 'Copy blocked — select manually'
-          : 'Copy build prompt'}
+      {state === 'done' ? label.done : state === 'failed' ? label.failed : label.idle}
     </button>
+  );
+}
+
+/**
+ * Copies a complete, self-contained build prompt for this component — carrying
+ * the current slider values, so a tuned page hands over its tuning.
+ */
+function CopyPrompt({ spec, params }: { spec: Specimen; params: TensionParams }) {
+  return (
+    <CopyButton
+      text={() => buildPrompt(spec.name, spec.principle, params, SPECS[spec.id])}
+      label={{
+        idle: 'Copy build prompt',
+        done: 'Prompt copied',
+        failed: 'Copy blocked — select manually',
+      }}
+    />
   );
 }
 
