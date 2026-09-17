@@ -684,3 +684,6 @@ input[type='range']:focus-visible { outline: 1px solid var(--ink); outline-offse
     transition-duration: 0.01ms !important;
   }
 }
+
+.portfolio-return { display:inline-block; margin-bottom:28px; color:inherit; font:13px/1.5 sans-serif; text-underline-offset:4px; }
+.portfolio-return:focus-visible { outline:2px solid currentColor; outline-offset:5px; }

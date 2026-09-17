@@ -206,6 +206,7 @@ function App() {
       <MotionContext.Provider value={{ speed: c.speed, bounce: c.bounce }}>
         <div className="page">
           <header className="masthead">
+            <a className="portfolio-return" href="https://maitreyi0002-beep.github.io/maitreyi-portfolio/#experiments">← Back to portfolio</a>
             <p className="kicker">A working monograph</p>
             <h1>
               Morphing<span> Flow</span>
