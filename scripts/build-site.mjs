@@ -34,7 +34,7 @@ async function run() {
 
   const js = result.outputFiles[0].text;
   const css = await readFile('site/styles.css', 'utf8');
-  const head = `<title>Morphing Flow</title>\n${FONTS}\n<style>\n${css}\n</style>`;
+  const head = `<title>Morphing Flow</title>\n${FONTS}\n<script defer src="https://cloud.umami.is/script.js" data-website-id="61ab38c0-9290-4fa6-a4bc-ddd9066150b3"></script>\n<style>\n${css}\n</style>`;
   const body = '<div id="root"></div>';
 
   // Full document, for hosting and for opening off disk.

@@ -17,6 +17,12 @@ import { TensionTabs } from '../src/lib/components/TensionTabs';
 import { TensionSegmented } from '../src/lib/components/TensionSegmented';
 import { TensionChips } from '../src/lib/components/TensionChips';
 
+function track(event: string, data?: Record<string, string | number>) {
+  try {
+    (window as any).umami?.track(event, data);
+  } catch {}
+}
+
 /* ============================================================
    The six chapters
    ============================================================ */
@@ -189,8 +195,21 @@ function App() {
     else el.setAttribute('data-theme', theme);
   }, [theme]);
 
-  const set = <K extends keyof Controls>(k: K) => (v: number) =>
+  const seenChapters = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    if (seenChapters.current.has(activeId)) return;
+    seenChapters.current.add(activeId);
+    track('chapter-reached', { chapter: activeId });
+  }, [activeId]);
+
+  const controlTimers = useRef<Partial<Record<keyof Controls, number>>>({});
+  const set = <K extends keyof Controls>(k: K) => (v: number) => {
     setC((p) => ({ ...p, [k]: v }));
+    window.clearTimeout(controlTimers.current[k]);
+    controlTimers.current[k] = window.setTimeout(() => {
+      track('control-change', { control: k });
+    }, 800);
+  };
 
   const dirty = (Object.keys(DEFAULTS) as (keyof Controls)[]).some(
     (k) => c[k] !== DEFAULTS[k],
@@ -220,7 +239,7 @@ function App() {
             <p className="byline">
               Technique distilled from Jakub Antalik’s{' '}
               <a href="https://gooey.jakubantalik.com/" target="_blank" rel="noopener noreferrer">
-                liquid-liquid
+                liquid UI library
               </a>
               , whose filters resolve to a threshold of 0.4167 — the value this
               kit ships as its default.
@@ -239,6 +258,7 @@ function App() {
               <code>{SKILL_INSTALL_COMMAND}</code>
               <CopyButton
                 text={SKILL_INSTALL_COMMAND}
+                event="copy-skill-install"
                 label={{
                   idle: 'Copy install command',
                   done: 'Command copied',
@@ -329,7 +349,10 @@ function App() {
                   <Toggle
                     value={ground}
                     options={[['paper', 'Paper'], ['ink', 'Ink']]}
-                    onChange={(v) => setGround(v as Ground)}
+                    onChange={(v) => {
+                      setGround(v as Ground);
+                      track('control-change', { control: 'ground' });
+                    }}
                   />
               </Group>
 
@@ -337,7 +360,10 @@ function App() {
                   <Toggle
                     value={theme}
                     options={[['system', 'Auto'], ['light', 'Light'], ['dark', 'Dark']]}
-                    onChange={(v) => setTheme(v as Theme)}
+                    onChange={(v) => {
+                      setTheme(v as Theme);
+                      track('control-change', { control: 'theme' });
+                    }}
                   />
               </Group>
             </aside>
@@ -362,6 +388,7 @@ function Chapter({
   ground: Ground;
 }) {
   const [fieldRef, fieldW] = useWidth<HTMLDivElement>();
+  const interacted = useRef(false);
 
   const p: TensionParams = useMemo(
     () => ({
@@ -386,7 +413,16 @@ function Chapter({
       <p className="prose lede">{spec.lede}</p>
 
       <figure className="figure">
-        <div className="field" data-ground={ground} ref={fieldRef}>
+        <div
+          className="field"
+          data-ground={ground}
+          ref={fieldRef}
+          onPointerDown={() => {
+            if (interacted.current) return;
+            interacted.current = true;
+            track('component-interact', { component: spec.id });
+          }}
+        >
           <div style={{ transform: `scale(${fit})` }}>{spec.render(p)}</div>
         </div>
         <figcaption>
@@ -417,9 +453,11 @@ function Chapter({
 function CopyButton({
   text,
   label,
+  event,
 }: {
   text: string | (() => string);
   label: { idle: string; done: string; failed: string };
+  event?: string;
 }) {
   const [state, setState] = useState<'idle' | 'done' | 'failed'>('idle');
 
@@ -428,6 +466,7 @@ function CopyButton({
     try {
       await navigator.clipboard.writeText(value);
       setState('done');
+      if (event) track(event);
     } catch {
       const ta = document.createElement('textarea');
       ta.value = value;
@@ -437,6 +476,7 @@ function CopyButton({
       const ok = document.execCommand?.('copy');
       document.body.removeChild(ta);
       setState(ok ? 'done' : 'failed');
+      if (ok && event) track(event);
     }
     window.setTimeout(() => setState('idle'), 2600);
   };
@@ -456,6 +496,7 @@ function CopyPrompt({ spec, params }: { spec: Specimen; params: TensionParams })
   return (
     <CopyButton
       text={() => buildPrompt(spec.name, spec.principle, params, SPECS[spec.id])}
+      event={`copy-prompt-${spec.id}`}
       label={{
         idle: 'Copy build prompt',
         done: 'Prompt copied',
